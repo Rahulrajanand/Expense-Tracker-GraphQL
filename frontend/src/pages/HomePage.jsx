@@ -2,8 +2,8 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 
-import Cards from "../components/Cards";
-import TransactionForm from "../components/TransactionForm";
+// import Cards from "../components/Cards";
+// import TransactionForm from "../components/TransactionForm";
 
 import { MdLogout } from "react-icons/md";
 
@@ -41,7 +41,7 @@ const HomePage = () => {
 						Spend wisely, track wisely
 					</p>
 					<img
-						src={"https://tecdn.b-cdn.net/img/new/avatars/2.webp"}
+						// src={"https://tecdn.b-cdn.net/img/new/avatars/2.webp"}
 						className='w-11 h-11 rounded-full border cursor-pointer'
 						alt='Avatar'
 					/>
@@ -54,9 +54,9 @@ const HomePage = () => {
 						<Doughnut data={chartData} />
 					</div>
 
-					<TransactionForm />
+					{/* <TransactionForm /> */}
 				</div>
-				<Cards />
+				{/* <Cards /> */}
 			</div>
 		</>
 	);
