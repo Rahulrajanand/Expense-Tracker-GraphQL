@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 
 const userResolver = {
     Mutation: {
-
         signUp: async(_,{input},context) => {
             try {
                 const {username, name, password, gender} = input;
@@ -75,15 +74,28 @@ const userResolver = {
             }
         }
     },
-    Query: {
-        users: (_,_,{req,res}) => {
-            return users
-        },
-        user: (_, {userId}) => {
-            return users.find((user) => user._id === userId);
-        }, 
-    },
-    
-};
 
+    Query: {
+        authUser : async(_,_,context) => {
+            try {
+                const user = await context.getUser();     // from graphql documentation
+                return user;
+            } catch (err) {
+                console.error("Error in authUser: ",err);
+                throw new Error("Internal server error");
+            }
+        },
+        user: async (_,{userId}) => {
+            try {
+                const user = await User.findById(userId);
+                return user;
+            } catch (err) {
+                console.error("Error in user query: ",err);
+                throw new Error(err.message || "Error getting user");
+            }
+        }
+    },
+    // TODO => ADD USER/TRANSACTION RELATION
+};
+    
 export default userResolver;
