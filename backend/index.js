@@ -3,18 +3,53 @@ import http from 'http';
 import cors from 'cors';
 import dotenv from "dotenv";
 
+import passport from 'passport';
+import session from 'express-session';
+import ConnectMongo from 'connect-mongodb-session';
+
 import { ApolloServer } from "@apollo/server"  ;
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 
+import {  buildContext } from "graphql-passport";
+
 import mergedResolvers from "./resolvers/index.js";
 import mergedTypeDefs from "./typeDefs/index.js";
+
 import { connectDB } from './db/connectDB.js';
+import { configurePassport } from './passport/passport.config.js';
 
 dotenv.config();                                 //calling function, if we don't call this function then we cann't use the environment variables from .env
+configurePassport();                            //from passport.config.js
+
 const app = express();
 
 const httpServer = http.createServer(app);
+
+const MongoDBStore = connectMongo(session);
+
+const store = new MongoDBStore({
+  uri: process.env.MONGO_URI,
+  collection: "sessions",                        //storing the above uri in sessions collection
+})
+
+store.on("error",(err) => console.log(err));
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,        //this option specifies whether to save the session to the store on every request   //if we say true then we would have multiple sessions for the same user
+    saveUninitialized: false,
+    cookie:{
+      maxAge: 1000 * 60 * 60 * 24 * 7, //this session expires in 1 week
+      httpOnly: true,       //this option prevents the Cross-Site Scripting (XSS) attacks
+    },
+    store: store
+  })
+)
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 const server = new ApolloServer({
   typeDefs: mergedTypeDefs,
@@ -29,12 +64,15 @@ const server = new ApolloServer({
  // and our expressMiddleware function.
 app.use(
   '/',
-  cors(),
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  }),
   express.json(),
   // expressMiddleware accepts the same arguments:
   // an Apollo Server instance and optional configuration options
   expressMiddleware(server, {
-    context: async ({ req }) => ({ req }),
+    context: async ({ req, res }) => buildContext({ req, res }),   //context is basically an object that sits around all resolvers
   }),
 );
 
