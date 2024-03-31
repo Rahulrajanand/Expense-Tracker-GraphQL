@@ -1,6 +1,7 @@
 import {users} from "../dummyData/data.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import Transaction from "../models/transaction.model.js";
 
 const userResolver = {
     Mutation: {
@@ -47,8 +48,9 @@ const userResolver = {
         login: async(_,{input},context) => {
             try {
                 const {username, password} = input;            // getting username,password from input
-                if(!loginData.username || !loginData.password) throw new Error("All fields are required");
-                const {user} = await context.authenticate("graphql-local",{username,password})
+                if(!username || !password) throw new Error("All fields are required");
+                const {user} = await context.authenticate("graphql-local",{username,password});
+                
 
                 await context.login(user);              //login the user and return the user back
                 return user;

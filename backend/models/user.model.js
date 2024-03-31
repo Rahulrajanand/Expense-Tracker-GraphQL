@@ -2,7 +2,7 @@
 //First we create a schema
 //Depending on the schema we create the model
 
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
     username:{
