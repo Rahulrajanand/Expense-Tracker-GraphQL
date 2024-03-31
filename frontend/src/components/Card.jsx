@@ -14,7 +14,7 @@ const categoryColorMap = {
 };
 
 const Card = ({ cardType }) => {
-	const cardClass = categoryColorMap[cardType];
+	const cardClass = categoryColorMap[cardType];           //Map
 
 	return (
 		<div className={`rounded-md p-4 bg-gradient-to-br ${cardClass}`}>
