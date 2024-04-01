@@ -3,7 +3,7 @@ import Card from "./Card.jsx";
 import { GET_TRANSACTIONS } from "../graphql/queries/transaction.query.js";
 
 const Cards = () => {
-	const {data,loading,error} = useQuery(GET_TRANSACTIONS);
+	const {data,loading} = useQuery(GET_TRANSACTIONS);
 
 	console.log("cards",data);
 
