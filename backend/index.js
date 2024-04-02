@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import dotenv from "dotenv";
-
+import path from 'path';
 import passport from 'passport';
 import session from 'express-session';
 import connectMongo from 'connect-mongodb-session';
@@ -20,9 +20,11 @@ import mergedTypeDefs from "./typeDefs/index.js";
 import { connectDB } from './db/connectDB.js';
 import { configurePassport } from './passport/passport.config.js';
 
+
 dotenv.config();                                 //calling function, if we don't call this function then we cann't use the environment variables from .env
 configurePassport();                            //from passport.config.js
 
+const __dirname = path.resolve();
 const app = express();
 
 const httpServer = http.createServer(app);
@@ -76,6 +78,14 @@ app.use(
     context: async ({ req, res }) => buildContext({ req, res }),   //context is basically an object that sits around all resolvers
   }),
 );
+
+  //npm run build will build your frontend app, and it will be the optimized version of your app
+  app.use(express.static(path.join(__dirname, "frontend/dist")));
+
+  //any route other than graphql,We should be able to see react application
+  app.get("*",(req,res) => {
+    res.sendFile(path.join(__dirname, "frontend/dist", "index.html"))
+  })
 
  // Modified server startup
 await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
