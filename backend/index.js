@@ -20,9 +20,13 @@ import mergedTypeDefs from "./typeDefs/index.js";
 import { connectDB } from './db/connectDB.js';
 import { configurePassport } from './passport/passport.config.js';
 
+import job from './cron.js';
+
 
 dotenv.config();                                 //calling function, if we don't call this function then we cann't use the environment variables from .env
 configurePassport();                            //from passport.config.js
+
+job.start();
 
 const __dirname = path.resolve();
 const app = express();
