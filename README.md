@@ -8,3 +8,9 @@ Expense Tracker is a full-stack MERN (MongoDB, Express.js, React.js, Node.js) ap
 - Categories: Expenses can be categorized for better organization.
 - Graphical Representation: Visual representation of expenses through graphs and charts.
 - Responsive Design: The application is responsive and optimized for various screen sizes.
+
+  Setup .env file
+  ```
+MONGO_URI=...
+SESSION_SECRET=...
+  ```
